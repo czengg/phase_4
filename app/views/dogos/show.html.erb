@@ -1,0 +1,45 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @dogo.name %>
+</p>
+
+<p>
+  <b>Street:</b>
+  <%= @dogo.street %>
+</p>
+
+<p>
+  <b>City:</b>
+  <%= @dogo.city %>
+</p>
+
+<p>
+  <b>State:</b>
+  <%= @dogo.state %>
+</p>
+
+<p>
+  <b>Zip:</b>
+  <%= @dogo.zip %>
+</p>
+
+<p>
+  <b>Latitude:</b>
+  <%= @dogo.latitude %>
+</p>
+
+<p>
+  <b>Longitude:</b>
+  <%= @dogo.longitude %>
+</p>
+
+<p>
+  <b>Active:</b>
+  <%= @dogo.active %>
+</p>
+
+
+<%= link_to 'Edit', edit_dogo_path(@dogo) %> |
+<%= link_to 'Back', dogos_path %>

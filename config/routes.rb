@@ -1,5 +1,17 @@
 Karate67272::Application.routes.draw do
 
+  resources :users
+
+
+  resources :dojo_students
+
+
+  resources :dogos
+
+
+  resources :tournaments
+
+
   # Generated routes
   resources :events
   resources :registrations

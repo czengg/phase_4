@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Dojo:</b>
+  <%= @dojo_student.dojo_id %>
+</p>
+
+<p>
+  <b>Student:</b>
+  <%= @dojo_student.student_id %>
+</p>
+
+<p>
+  <b>Start date:</b>
+  <%= @dojo_student.start_date %>
+</p>
+
+<p>
+  <b>End date:</b>
+  <%= @dojo_student.end_date %>
+</p>
+
+
+<%= link_to 'Edit', edit_dojo_student_path(@dojo_student) %> |
+<%= link_to 'Back', dojo_students_path %>
