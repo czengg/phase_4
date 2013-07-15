@@ -4,6 +4,7 @@ class StudentTest < ActiveSupport::TestCase
   # Test relationships
   should have_many(:registrations)
   should have_many(:sections).through(:registrations)
+  should have_many(:tournaments).through(:sections)
   
   # Test basic validations
   should validate_presence_of(:first_name)

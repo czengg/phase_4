@@ -1,5 +1,5 @@
 class Registration < ActiveRecord::Base
-  attr_accessible :date, :section_id, :student_id
+  attr_accessible :date, :section_id, :student_id, :fee_paid, :final_standing
   
   # Relationships
   belongs_to :section
@@ -12,6 +12,9 @@ class Registration < ActiveRecord::Base
   scope :by_student, joins(:student).order('last_name, first_name')
   scope :by_date, order('date')
   scope :by_event_name, joins(:section, :event).order('events.name')
+  scope :paid, where('fee_paid = ?', true)
+  scope :unpaid, where('fee_paid = ?', false)
+  scope :by_final_standing, order('final_standing')
   
   # Validations
   validates_date :date, :on_or_before => lambda { Date.current }, :on_or_before_message => "cannot be in the future"
@@ -24,6 +27,21 @@ class Registration < ActiveRecord::Base
   validate :registration_is_not_already_in_system, :on => :create
   # validates_uniqueness_of :student_id, scope: :section_id
   
+  #Callbacks
+  before_destroy :check_if_destroyable
+
+  def check_if_destroyable
+    if self.student?
+      self.active = false
+      self.save!
+      return false
+    else
+      self.destroy
+      self.save!
+      return true
+    end
+  end
+
   private
   def section_is_active_in_system
     # get an array of all active sections in the system

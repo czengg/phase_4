@@ -1,10 +1,11 @@
 class Section < ActiveRecord::Base
-  attr_accessible :active, :event_id, :min_age, :min_rank, :max_age, :max_rank
+  attr_accessible :active, :event_id, :min_age, :min_rank, :max_age, :max_rank, :tournament_id, :location, :round_time
   
   # Relationships
   belongs_to :event
   has_many :registrations
   has_many :students, :through => :registrations
+  belongs_to :tournament
   
   # Scopes
   scope :for_event, lambda {|event_id| where("event_id = ?", event_id) }
@@ -13,10 +14,13 @@ class Section < ActiveRecord::Base
   scope :active, where('sections.active = ?', true)
   scope :inactive, where('sections.active = ?', false)
   scope :alphabetical, joins(:event).order('events.name, min_rank, min_age')
+  scope :for_location, lambda{|l| where("location = ?", l)}
+  scope :by_location, order('location')
+  scope :for_tournament, lambda{|t| where('tournament_id = ?', t)}
   
   # Validations
-  validates_numericality_of :min_rank, :only_integer => true, :greater_than => 0
-  validates_numericality_of :max_rank, :only_integer => true, :greater_than_or_equal_to => :min_rank, :allow_blank => true
+  validates_numericality_of :min_rank, :only_integer => true, :greater_than_or_equal_to => :tournament_min_rank
+  validates_numericality_of :max_rank, :only_integer => true, :greater_than_or_equal_to => :tournament_max_rank, :allow_blank => true
   validates_numericality_of :min_age, :only_integer => true, :greater_than_or_equal_to => 5
   validates_numericality_of :max_age, :only_integer => true, :greater_than_or_equal_to => :min_age, :allow_blank => true
   validates_numericality_of :event_id, :only_integer => true, :greater_than => 0, :message => "is not a valid event"
@@ -24,11 +28,64 @@ class Section < ActiveRecord::Base
 
   validate :event_is_active_in_system
   validate :section_is_not_already_in_system, :on => :create
+  validate :tournament_is_active_in_system
 
   # Not needed unless going the long route with registrations
   # def to_s
   #   "#{self.event.name} => #{self.min_rank}-#{self.max_rank} => #{self.min_age}-#{self.max_age}"
   # end
+
+  #Callbacks
+  before_destroy :check_if_destroyable
+
+  def tournament_min_rank
+    if tournament_is_active_in_system
+      active_tournament_ids = Tournament.active.all.map{|t| t.id}
+      active_tournament_ids.each do |i|
+        if i == self.tournament_id
+          return min_rank
+        end
+      end
+    end
+    return
+  end
+
+  def tournament_max_rank
+    if tournament_is_active_in_system
+      active_tournament_ids = Tournament.active.all.map{|t| t.id}
+      active_tournament_ids.each do |i|
+        if i == self.tournament_id
+          return max_rank
+        end
+      end
+    end
+    return
+  end
+
+  def have_registrations 
+    registration_ids = Registration.all.map{|r| r.id}
+    return !registration_ids.empty?
+  end
+
+  def check_if_destroyable
+    if section_empty? == false
+      self.active = false
+      self.save!
+      return false
+    else
+      self.destroy
+      self.save!
+      return true
+    end
+  end
+
+  def section_empty?
+    if self.sections.registration
+      return false
+    else
+      return true
+    end
+  end
 
   private
   def event_is_active_in_system
@@ -50,4 +107,14 @@ class Section < ActiveRecord::Base
       errors.add(:min_rank, "already has a section for this event, age and rank")
     end
   end
+
+  def tournament_is_active_in_system
+    active_tournament_ids = Tournament.active.all.map{|t| t.id}
+    unless active_tournament_ids.include?(self.tournament_id)
+      errors.add(:tournament, "is not an active tournament in the system")
+      return false
+    end
+    return true
+  end
+
 end

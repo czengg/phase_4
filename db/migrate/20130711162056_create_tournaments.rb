@@ -1,12 +1,11 @@
 class CreateTournaments < ActiveRecord::Migration
   def change
     create_table :tournaments do |t|
-      t.string :first_name
-      t.string :last_name
-      t.Date :date_of_birth
-      t.string :phone
-      t.integer :rank
-      t.boolean :active
+      t.string :name
+      t.date :date
+      t.integer :min_rank, :default => 1
+      t.integer :max_rank, :default => 15
+      t.boolean :active, :default => true
 
       t.timestamps
     end

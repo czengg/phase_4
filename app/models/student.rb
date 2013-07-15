@@ -12,6 +12,7 @@ class Student < ActiveRecord::Base
   # Relationships
   has_many :registrations
   has_many :sections, :through => :registrations
+  has_many :tournaments, :through => :sections
   
   # Scopes
   scope :alphabetical, order('last_name, first_name')
@@ -36,7 +37,7 @@ class Student < ActiveRecord::Base
   validates_numericality_of :rank, :only_integer => true, :greater_than => 0
   validates_inclusion_of :waiver_signed, :in => [true, false], :message => "must be true or false"
   validates_inclusion_of :active, :in => [true, false], :message => "must be true or false"
-  
+
   # Other methods
   def name
     "#{last_name}, #{first_name}"

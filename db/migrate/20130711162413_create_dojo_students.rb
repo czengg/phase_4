@@ -3,8 +3,8 @@ class CreateDojoStudents < ActiveRecord::Migration
     create_table :dojo_students do |t|
       t.integer :dojo_id
       t.integer :student_id
-      t.Date :start_date
-      t.Date :end_date
+      t.date :start_date
+      t.date :end_date
 
       t.timestamps
     end

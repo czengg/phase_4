@@ -16,10 +16,12 @@ FactoryGirl.define do
   
   factory :section do
     association :event
+    association :tournament
     min_age 9
     max_age 10
     min_rank 1
     max_rank 2
+    round_time 1.hour.ago.to_time
     active true
   end
   
@@ -28,4 +30,26 @@ FactoryGirl.define do
     association :student
     date Date.today
   end
+
+  factory :dojo do
+    name "Shadyside"
+    street "5000 Forbes Ave"
+    zip "15213"
+    active true
+  end
+
+  factory :dojo_student do
+    association :student
+    association :dojo
+    start_date Date.today
+  end
+
+  factory :tournament do
+    name "A&M Tournament"
+    date Time.now.next_week.to_date
+    min_rank 1
+    max_rank 10
+    active true
+  end
+
 end

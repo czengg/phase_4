@@ -82,4 +82,28 @@ class ActiveSupport::TestCase
     @reg_nm_br.destroy
     @reg_hm_br.destroy
   end
+
+  def create_dojo_context
+    @shadyside = FactoryGirl.create(:dojo)
+    @squirrelhill = FactoryGirl.create(:dojo, :name => "Squirrel Hill", :street => "1324 Murray Ave", :zip => "15444", :active => false, :state => "CA")
+    @southside = FactoryGirl.create(:dojo, :name => "South Side", :street => "1234 Carson St", :zip => "15222", :active => true, :state => "CO")
+  end
+
+  def remove_dojo_context
+    @shadyside.destroy
+    @squirrelhill.destroy
+    @southside.destroy
+  end
+
+  def create_tournament_context
+    @am = FactoryGirl.create(:tournament)
+    @pm = FactoryGirl.create(:tournament, :name => "P&M Tournament", :date => Time.now.next_month.to_date, :min_rank => 5, :max_rank => 15)
+    @cm = FactoryGirl.create(:tournament, :name => "C&M Tournament", :date => 2.days.ago.to_date, :min_rank => 7, :max_rank => 10, :active => false)
+  end
+
+  def remove_tournament_context
+    @am.destroy
+    @pm.destroy
+    @cm.destroy
+  end
 end

@@ -13,10 +13,12 @@ class StudentsController < ApplicationController
   
   def new
     @student = Student.new
+    @user = @student.build_user
   end
 
   def edit
     @student = Student.find(params[:id])
+    @user = @student.build_user unless @user
   end
 
   def create
@@ -43,7 +45,8 @@ class StudentsController < ApplicationController
 
   def destroy
     @student = Student.find(params[:id])
-    @student.destroy
+    @student.active = false
+    @user.destroy
     flash[:notice] = "Successfully removed #{@student.proper_name} from karate tournament system"
     redirect_to students_url
   end
