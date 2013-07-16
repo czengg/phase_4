@@ -16,7 +16,7 @@ class Event < ActiveRecord::Base
   validates_inclusion_of :active, :in => [true, false], :message => "must be true or false" 
     
   #Callbacks
-  before_destroy :check_if_destroyable
+  # before_destroy :check_if_destroyable
 
   def check_if_destroyable
     if section_empty? == false

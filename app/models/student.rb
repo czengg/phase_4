@@ -31,7 +31,7 @@ class Student < ActiveRecord::Base
   # scope :ages_between, lambda {|low_age,high_age| where("date_of_birth between ? and ?", ((high_age+1).years - 1.day).ago.to_date, low_age.years.ago.to_date) }
   
   # Validations
-  validates_presence_of :first_name, :last_name
+  validates_presence_of :first_name, :last_name, :date_of_birth, :rank
   validates_date :date_of_birth, :on_or_before => lambda { 5.years.ago }, :on_or_before_message => "must be at least 5 years old" #, :allow_blank => true
   validates_format_of :phone, :with => /^\(?\d{3}\)?[-. ]?\d{3}[-.]?\d{4}$/, :message => "should be 10 digits (area code needed) and delimited with dashes only", :allow_blank => true
   validates_numericality_of :rank, :only_integer => true, :greater_than => 0

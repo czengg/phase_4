@@ -20,6 +20,7 @@ class Registration < ActiveRecord::Base
   validates_date :date, :on_or_before => lambda { Date.current }, :on_or_before_message => "cannot be in the future"
   validates_numericality_of :section_id, :only_integer => true, :greater_than => 0
   validates_numericality_of :student_id, :only_integer => true, :greater_than => 0
+  validates_numericality_of :final_standing, :only_integer => true, :greater_than => 0, :less_than => 16
   validate :student_is_appropriate_rank
   validate :student_is_appropriate_age
   validate :section_is_active_in_system
@@ -28,7 +29,7 @@ class Registration < ActiveRecord::Base
   # validates_uniqueness_of :student_id, scope: :section_id
   
   #Callbacks
-  before_destroy :check_if_destroyable
+  # before_destroy :check_if_destroyable
 
   def check_if_destroyable
     if self.student?

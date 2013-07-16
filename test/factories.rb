@@ -15,8 +15,8 @@ FactoryGirl.define do
   end
   
   factory :section do
-    association :event
     association :tournament
+    association :event
     min_age 9
     max_age 10
     min_rank 1
@@ -28,6 +28,8 @@ FactoryGirl.define do
   factory :registration do
     association :section
     association :student
+    final_standing 14
+    fee_paid true
     date Date.today
   end
 
@@ -42,6 +44,7 @@ FactoryGirl.define do
     association :student
     association :dojo
     start_date Date.today
+    end_date nil
   end
 
   factory :tournament do

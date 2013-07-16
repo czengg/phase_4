@@ -9,6 +9,8 @@ class StudentTest < ActiveSupport::TestCase
   # Test basic validations
   should validate_presence_of(:first_name)
   should validate_presence_of(:last_name)
+  should validate_presence_of(:date_of_birth)
+  should validate_presence_of(:rank)
 
   # tests for rank
   should validate_numericality_of(:rank)

@@ -34,38 +34,51 @@ class DojoStudentTest < ActiveSupport::TestCase
   	
   	#create objects
   	setup do
-  		@ed = FactoryGirl.create(:student)
-  		@fred = FactoryGirl.create(:student, :first_name => "Fred", :rank => 5, :waiver_signed => false, :date_of_birth => 5.years.ago.to_date, :phone => "1234567890", :active => true)
-  		@shadyside = FactoryGirl.create(:dojo)
-  		@squirrelhill = FactoryGirl.create(:dojo, :name => "Squirrel Hill", :street => "1324 Murray Ave", :zip => "15444", :active => false)
-  		@rec1 = FactoryGirl.create(:dojo_student, :student => @ed, :dojo => @shadyside)
-  		@rec2 = FactoryGirl.create(:dojo_student, :student => @fred, :dojo => @squirrelhill, :start_date => Date.today)
-  		@rec3 = FactoryGirl.create(:dojo_student, :student => @ed, :dojo => @squirrelhill, :start_date => 2.years.ago.to_date, :end_date => 1.day.ago.to_date)
-  	end
+      create_dojo_context
+  		create_event_context
+      create_tournament_context
+      create_student_context
+      create_section_context
+      create_registration_context
+      create_dojo_student_context
+    end
 
   	teardown do
-  		@ed.destroy
-  		@fred.destroy
-  		@shadyside.destroy
-  		@squirrelhill.destroy
-  		@rec1.destroy
-  		@rec2.destroy
-  		@rec3.destroy
+      remove_dojo_context
+  		remove_event_context
+      remove_tournament_context
+      remove_student_context
+      remove_section_context
+      remove_registration_context
+      remove_dojo_student_context
   	end
 
   	should "show that student, dojo, dojo_student is created properly" do
-  		puts "Start"
   		assert_equal "Ed", @ed.first_name
-  		puts "Ed done"
   		assert_equal "Shadyside", @shadyside.name
-  		puts "Shadyside done"
-  		assert_equal "Fred", @rec2.student.name
-  		puts "Fred done"
+  		assert_equal "Fred", @rec2.student.first_name
   	end
 
+    should "have scope that filters all current dojo_students (no end_date)" do
+      # assert_equal 2, DojoStudent.current.size
+      assert_equal nil, @rec1.end_date
+    end
 
+  	should "have a scope to filter registrations by student" do
+      assert_equal 2, DojoStudent.for_student(@ed.id).size
+    end
 
-  	# should "have all the "
+    should "have a scope to filter registrations by student" do
+      assert_equal 2, DojoStudent.for_dojo(@southside.id).size
+    end
+
+    should "have a scope to alphabetize registrations by student name" do
+      assert_equal ["Ed", "Ed", "Fred"], DojoStudent.by_student.map{|d| d.student.first_name}
+    end
+
+    should "have a scope to alphabetize registrations by dojo name" do
+      assert_equal ["Shadyside", "South Side", "South Side"], DojoStudent.by_dojo.map{|d| d.dojo.name}
+    end
 
   end
 

@@ -1,17 +1,15 @@
 class DojoStudent < ActiveRecord::Base
   attr_accessible :dojo_id, :end_date, :start_date, :student_id
 
-  
-
   #Relationships
   belongs_to :dojo
   belongs_to :student
 
   #Scopes
-  scope :current, lambda { |end_date| where('end_date = ?', nil)}
+  scope :current, where('end_date = ?', nil)
   scope :for_student, lambda { |student_id| where('student_id = ?', student_id)}
   scope :for_dojo, lambda { |dojo_id| where('dojo_id = ?', dojo_id)}
-  scope :by_student, joins(:student).order('students.last_name, student.first_name')
+  scope :by_student, joins(:student).order('students.last_name, students.first_name')
   scope :by_dojo, joins(:dojo).order('dojos.name')
 
   #Validations

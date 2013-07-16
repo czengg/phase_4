@@ -28,7 +28,7 @@ class ActiveSupport::TestCase
   def create_student_context
     @ed = FactoryGirl.create(:student)
     @ted = FactoryGirl.create(:student, :first_name => "Ted", :phone => "412-268-2323")
-    @fred = FactoryGirl.create(:student, :first_name => "Fred", :rank => 9)
+    @fred = FactoryGirl.create(:student, :first_name => "Fred", :last_name => "Smith", :rank => 9)
     @ned = FactoryGirl.create(:student, :first_name => "Ned", :date_of_birth => 13.years.ago.to_date)
     @noah = FactoryGirl.create(:student, :first_name => "Noah", :last_name => "Major", :rank => 9, :date_of_birth => 13.years.ago.to_date)
     @howard = FactoryGirl.create(:student, :first_name => "Howard", :last_name => "Minor", :rank => 8, :date_of_birth => 169.months.ago.to_date)
@@ -49,38 +49,40 @@ class ActiveSupport::TestCase
     @jason.destroy
   end
   
-  # Context for sections (requires events)
+  # Context for sections (requires events and tournaments)
   def create_section_context
-    @wy_belt_sparring = FactoryGirl.create(:section, :event => @sparring)
-    @wy_belt_breaking = FactoryGirl.create(:section, :event => @breaking)
-    @r_belt_breaking = FactoryGirl.create(:section, :event => @breaking, :min_rank => 8, :max_rank => 10, :min_age => 13, :max_age => 15)
-    @r_belt_sparring = FactoryGirl.create(:section, :event => @sparring, :min_rank => 8, :max_rank => 10, :min_age => 13, :max_age => 15, :active => false)
-    @bl_belt_breaking = FactoryGirl.create(:section, :event => @breaking, :min_rank => 11, :max_rank => nil, :min_age => 18, :max_age => nil)
+    @wy_belt_sparring = FactoryGirl.create(:section, :event => @sparring, :tournament => @am)
+    @wy_belt_breaking = FactoryGirl.create(:section, :event => @breaking, :tournament => @pm)
+    @r_belt_breaking = FactoryGirl.create(:section, :event => @breaking, :tournament => @pm, :min_rank => 8, :max_rank => 10, :min_age => 13, :max_age => 15)
+    @r_belt_sparring = FactoryGirl.create(:section, :event => @sparring, :tournament => @am, :min_rank => 8, :max_rank => 10, :min_age => 13, :max_age => 15, :active => false)
+    @bl_belt_breaking = FactoryGirl.create(:section, :event => @breaking, :tournament => @pm, :min_rank => 11, :max_rank => nil, :min_age => 18, :max_age => nil)
   end
   
   def remove_section_context
-    @wy_belt_sparring.destroy
-    @wy_belt_breaking.destroy
-    @r_belt_breaking.destroy
-    @r_belt_sparring.destroy
-    @bl_belt_breaking.destroy
+    # @wy_belt_sparring.destroy
+    # @wy_belt_breaking.destroy
+    # @r_belt_breaking.destroy
+    # @r_belt_sparring.destroy
+    # @bl_belt_breaking.destroy
+    Section.destroy_all
   end
   
   # Context for registrations (requires sections, students)
   def create_registration_context
     @reg_ed_sp = FactoryGirl.create(:registration, :student => @ed, :section => @wy_belt_sparring)
-    @reg_ted_sp = FactoryGirl.create(:registration, :student => @ted, :section => @wy_belt_sparring)
-    @reg_ted_br = FactoryGirl.create(:registration, :student => @ted, :section => @wy_belt_breaking)
-    @reg_hm_br = FactoryGirl.create(:registration, :student => @howard, :section => @r_belt_breaking, :date => 1.day.ago.to_date)
-    @reg_nm_br = FactoryGirl.create(:registration, :student => @noah, :section => @r_belt_breaking, :date => 2.days.ago.to_date)
+    @reg_ted_sp = FactoryGirl.create(:registration, :student => @ted, :section => @wy_belt_sparring, :fee_paid => false, :final_standing => 12)
+    @reg_ted_br = FactoryGirl.create(:registration, :student => @ted, :section => @wy_belt_breaking, :final_standing => 10)
+    @reg_hm_br = FactoryGirl.create(:registration, :student => @howard, :section => @r_belt_breaking, :date => 1.day.ago.to_date, :fee_paid => false, :final_standing => 9)
+    @reg_nm_br = FactoryGirl.create(:registration, :student => @noah, :section => @r_belt_breaking, :date => 2.days.ago.to_date, :final_standing => 3)
   end
   
   def remove_registration_context
-    @reg_ed_sp.destroy
-    @reg_ted_sp.destroy
-    @reg_ted_br.destroy
-    @reg_nm_br.destroy
-    @reg_hm_br.destroy
+    # @reg_ed_sp.destroy
+    # @reg_ted_sp.destroy
+    # @reg_ted_br.destroy
+    # @reg_nm_br.destroy
+    # @reg_hm_br.destroy
+    Registration.destroy_all
   end
 
   def create_dojo_context
@@ -106,4 +108,18 @@ class ActiveSupport::TestCase
     @pm.destroy
     @cm.destroy
   end
+
+  def create_dojo_student_context
+    @rec1 = FactoryGirl.create(:dojo_student, :student => @ed, :dojo => @shadyside)
+    @rec2 = FactoryGirl.create(:dojo_student, :student => @fred, :dojo => @southside, :start_date => Date.today)
+    @rec3 = FactoryGirl.create(:dojo_student, :student => @ed, :dojo => @southside, :start_date => 2.years.ago.to_date, :end_date => 1.day.ago.to_date)
+  end
+
+  def remove_dojo_student_context
+    # @rec1.destroy
+    # @rec2.destroy
+    # @rec3.destroy
+    DojoStudent.destroy_all
+  end
+
 end

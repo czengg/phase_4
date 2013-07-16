@@ -19,11 +19,13 @@ class Section < ActiveRecord::Base
   scope :for_tournament, lambda{|t| where('tournament_id = ?', t)}
   
   # Validations
+  validates_presence_of :tournament_id, :event_id, :min_age, :min_rank 
   validates_numericality_of :min_rank, :only_integer => true, :greater_than_or_equal_to => :tournament_min_rank
-  validates_numericality_of :max_rank, :only_integer => true, :greater_than_or_equal_to => :tournament_max_rank, :allow_blank => true
+  validates_numericality_of :max_rank, :only_integer => true, :greater_than_or_equal_to => :min_rank, :less_than_or_equal_to => :tournament_max_rank, :allow_blank => true
   validates_numericality_of :min_age, :only_integer => true, :greater_than_or_equal_to => 5
   validates_numericality_of :max_age, :only_integer => true, :greater_than_or_equal_to => :min_age, :allow_blank => true
   validates_numericality_of :event_id, :only_integer => true, :greater_than => 0, :message => "is not a valid event"
+  validates_numericality_of :tournament_id, :only_integer => true, :greater_than => 0, :message => "is not a valid tournament"
   validates_inclusion_of :active, :in => [true, false], :message => "must be true or false"
 
   validate :event_is_active_in_system
@@ -36,7 +38,7 @@ class Section < ActiveRecord::Base
   # end
 
   #Callbacks
-  before_destroy :check_if_destroyable
+  # before_destroy :check_if_destroyable
 
   def tournament_min_rank
     if tournament_is_active_in_system
@@ -100,11 +102,11 @@ class Section < ActiveRecord::Base
   end
   
   def section_is_not_already_in_system
-    possible_repeat = Section.where(:event_id => self.event_id, :min_age => self.min_age, :min_rank => self.min_rank)
+    possible_repeat = Section.where(:event_id => self.event_id, :tournament_id => self.tournament_id, :min_age => self.min_age, :min_rank => self.min_rank)
     # alternate method would be using the dynamic find_by method...
     # possible_repeat = Section.find_by_event_id_and_min_age_and_min_rank(self.event_id, self.min_age, self.min_rank)
     unless possible_repeat.empty?  # use .nil? if using find_by as it only returns one object, not an array
-      errors.add(:min_rank, "already has a section for this event, age and rank")
+      errors.add(:min_rank, "already has a section for this event, tournament, age and rank")
     end
   end
 

@@ -14,6 +14,13 @@ class RegistrationTest < ActiveSupport::TestCase
   should_not allow_value(3.14159).for(:date)
   should_not allow_value(1.day.from_now.to_date).for(:date)
   
+  #test final_standing
+  should validate_numericality_of(:final_standing)
+  should_not allow_value(3.14159).for(:final_standing)
+  should_not allow_value(0).for(:final_standing)
+  should_not allow_value(-1).for(:final_standing)
+  should_not allow_value(20).for(:final_standing)
+
   # quick tests of ids
   should validate_numericality_of(:student_id)
   should validate_numericality_of(:section_id)
@@ -28,6 +35,7 @@ class RegistrationTest < ActiveSupport::TestCase
   context "Creating registrations context" do
     setup do
       create_event_context
+      create_tournament_context
       create_student_context
       create_section_context
       create_registration_context
@@ -35,6 +43,7 @@ class RegistrationTest < ActiveSupport::TestCase
     
     teardown do
       remove_event_context
+      remove_tournament_context
       remove_student_context
       remove_section_context
       remove_registration_context
@@ -78,6 +87,18 @@ class RegistrationTest < ActiveSupport::TestCase
       assert_equal 2, Registration.for_section(@wy_belt_sparring.id).size
       assert_equal 1, Registration.for_section(@wy_belt_breaking.id).size
       assert_equal 0, Registration.for_section(@bl_belt_breaking.id).size
+    end
+
+    should "have a scope to filter registrations by paid" do
+      assert_equal 3, Registration.paid.size
+    end
+
+    should "have a scope to filter registrations by unpaid" do
+      assert_equal 2, Registration.unpaid.size
+    end
+
+    should "have a scope to order registrations by final_standing" do
+      assert_equal ["Noah", "Howard", "Ted", "Ted", "Ed"], Registration.by_final_standing.by_student.map{|r| r.student.first_name}
     end
     
     # Test special validations
