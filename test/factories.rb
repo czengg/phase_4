@@ -44,7 +44,6 @@ FactoryGirl.define do
     association :student
     association :dojo
     start_date Date.today
-    end_date nil
   end
 
   factory :tournament do

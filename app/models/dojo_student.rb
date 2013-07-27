@@ -6,7 +6,7 @@ class DojoStudent < ActiveRecord::Base
   belongs_to :student
 
   #Scopes
-  scope :current, where('end_date = ?', nil)
+  scope :current, where(:end_date => nil)
   scope :for_student, lambda { |student_id| where('student_id = ?', student_id)}
   scope :for_dojo, lambda { |dojo_id| where('dojo_id = ?', dojo_id)}
   scope :by_student, joins(:student).order('students.last_name, students.first_name')
@@ -20,16 +20,21 @@ class DojoStudent < ActiveRecord::Base
   validate :student_is_active_in_system
 
   #Callbacks
-  # before_save end_previous_assignment
+  before_create :end_previous_assignment
 
   def end_previous_assignment
-  	all_student_dojos = DojoStudent.for_student.current.all.map{ |d| d.id }
-  	all_student_dojos.each { |dojo_rec| end_assignment_now(dojo_rec)}
+  	all_student_dojos = DojoStudent.for_student(self.student_id).current.map{ |d| d }
+  	all_student_dojos.each { |dojo_rec| end_assignment_now(dojo_rec,self.start_date)}
   end
 
-  def end_assignment_now(dojo_rec)
-  	dojo_rec.end_date = Date.today
+  def end_assignment_now(dojo_rec,start_date)
+  	dojo_rec.end_date = start_date
   	dojo_rec.save!
+  end
+
+  def end_today
+    self.end_date = Date.today
+    self.save!
   end
 
   private

@@ -16,31 +16,20 @@ class Event < ActiveRecord::Base
   validates_inclusion_of :active, :in => [true, false], :message => "must be true or false" 
     
   #Callbacks
-  # before_destroy :check_if_destroyable
+  before_destroy :check_if_destroyable
+  after_rollback :end_event_now
 
   def check_if_destroyable
-    if section_empty? == false
-      self.active = false
-      self.save!
-      return false
-    else
-      delete_event_now
+    if self.sections.active.empty?
       return true
+    else
+      return false
     end
   end
 
-  def section_empty?
-    if self.sections.registration
-      return false
-    else
-      return true
-    end
-  end
-
-  def delete_event_now
-    self.sections.each{ |s| s.destroy }
+  def end_event_now
+    self.sections.active.each{ |s| s.destroy }
     self.active = false
     self.save!
   end
-
 end

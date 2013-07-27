@@ -18,23 +18,23 @@ class Dojo < ActiveRecord::Base
   validates_inclusion_of :state, :in => STATES_LIST.map {|key, value| value}, :message => "is not an option", :allow_nil => true, :allow_blank => true
   validates_format_of :zip, :with => /^\d{5}$/, :message => "should be five digits long", :allow_blank => false
   validates_inclusion_of :active, :in => [true, false], :message => "must be true or false"
-  validate :dojo_name_is_already_in_system
+  validate :dojo_name_is_already_in_system, :on => :create
 
   #Callbacks
   before_save :find_dojo_coordinates
   before_destroy :check_if_destroyable
-  after_rollback :end_dojo_now
 
   def check_if_destroyable
-    if self.dojo_students.empty?
+    if self.dojo_students.current.empty?
       return true
     else
+      end_dojo_now
       return false
     end
   end
 
-  def delete_dojo_now
-    self.dojo_students.each{ |d| d.destroy }
+  def end_dojo_now
+    self.dojo_students.current.each { |d| d.end_today }
     self.active = false
     self.save!
   end
@@ -42,7 +42,7 @@ class Dojo < ActiveRecord::Base
   private
   def find_dojo_coordinates
     coord = Geocoder.coordinates("#{name}, #{state}")
-    if coord
+    if coord 
       self.latitude = coord[0]
       self.longitude = coord[1]
     else

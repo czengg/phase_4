@@ -38,7 +38,7 @@ class Section < ActiveRecord::Base
   # end
 
   #Callbacks
-  # before_destroy :check_if_destroyable
+  before_destroy :check_if_destroyable
 
   def tournament_min_rank
     if tournament_is_active_in_system
@@ -64,28 +64,13 @@ class Section < ActiveRecord::Base
     return
   end
 
-  def have_registrations 
-    registration_ids = Registration.all.map{|r| r.id}
-    return !registration_ids.empty?
-  end
-
   def check_if_destroyable
-    if section_empty? == false
-      self.active = false
-      self.save!
-      return false
-    else
+    if self.registrations.by_date.empty?
       self.destroy
       self.save!
-      return true
-    end
-  end
-
-  def section_empty?
-    if self.sections.registration
-      return false
     else
-      return true
+      self.active = false
+      self.save!
     end
   end
 

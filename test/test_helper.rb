@@ -92,9 +92,7 @@ class ActiveSupport::TestCase
   end
 
   def remove_dojo_context
-    @shadyside.destroy
-    @squirrelhill.destroy
-    @southside.destroy
+    Dojo.destroy_all
   end
 
   def create_tournament_context

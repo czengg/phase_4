@@ -16,25 +16,26 @@ class Tournament < ActiveRecord::Base
   #Validations
   validates_presence_of :name, :date, :min_rank, :max_rank
   validates_date :date
-  validates_numericality_of :min_rank, :only_integer => true, :greater_than_or_equal_to => 1, :less_than => 16, :allow_nil => false
+  validates_numericality_of :min_rank, :only_integer => true, :greater_than => 0, :less_than => 16
   validates_numericality_of :max_rank, :only_integer => true, :greater_than_or_equal_to => :min_rank, :less_than => 16
   validates_inclusion_of :active, :in => [true, false], :message => "must be true or false"
 
   #Callbacks
-  # before_destroy :check_if_destroyable
+  before_destroy :check_if_destroyable
+  after_rollback :end_tournament_now
 
   def check_if_destroyable
-    all_sections = Section.all.map{|s| s}
-    all_sections.each do |sec|
-      if sec.tournament_id == self.id
-        self.active = false
-        self.save!
-        return true
-      end
+    if self.sections.active.empty?
+      return true
+    else
+      return false
     end
-    self.destroy
+  end
+
+  def end_tournament_now
+    self.sections.active.each{ |s| s.destroy }
+    self.active = false
     self.save!
-    return false
   end
 
 end

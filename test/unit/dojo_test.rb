@@ -72,6 +72,12 @@ class DojoTest < ActiveSupport::TestCase
   		@bad_dojo = FactoryGirl.build(:dojo, :name => "Squirrel Hill", :street => "1325 Murray Ave", :zip => "15344", :active => true, :state => "PA")
   		deny @bad_dojo.valid?
   	end
+
+    should "make sure a dojo with students isn't deleted" do
+      @ed = FactoryGirl.build(:student)
+      @rec1 = FactoryGirl.build(:dojo_student, :student => @ed, :dojo => @shadyside)
+      assert_equal false, @shadyside.check_if_destroyable
+    end
   end
 
 end

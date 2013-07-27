@@ -4,7 +4,7 @@ class CreateDojoStudents < ActiveRecord::Migration
       t.integer :dojo_id
       t.integer :student_id
       t.date :start_date
-      t.date :end_date
+      t.date :end_date, :default => nil
 
       t.timestamps
     end
