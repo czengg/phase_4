@@ -19,9 +19,7 @@ class ActiveSupport::TestCase
   end
   
   def remove_event_context
-    @sparring.delete
-    @breaking.delete
-    @weapons.delete
+    Event.delete_all
   end
   
   # Context for students
@@ -38,15 +36,7 @@ class ActiveSupport::TestCase
   end
   
   def remove_student_context
-    @ed.delete
-    @ted.delete
-    @fred.delete
-    @ned.delete
-    @noah.delete
-    @jen.delete
-    @howard.delete
-    @julie.delete
-    @jason.delete
+    Student.delete_all
   end
   
   # Context for sections (requires events and tournaments)
@@ -59,11 +49,6 @@ class ActiveSupport::TestCase
   end
   
   def remove_section_context
-    # @wy_belt_sparring.destroy
-    # @wy_belt_breaking.destroy
-    # @r_belt_breaking.destroy
-    # @r_belt_sparring.destroy
-    # @bl_belt_breaking.destroy
     Section.delete_all
   end
   
@@ -77,11 +62,6 @@ class ActiveSupport::TestCase
   end
   
   def remove_registration_context
-    # @reg_ed_sp.destroy
-    # @reg_ted_sp.destroy
-    # @reg_ted_br.destroy
-    # @reg_nm_br.destroy
-    # @reg_hm_br.destroy
     Registration.delete_all
   end
 
@@ -104,9 +84,7 @@ class ActiveSupport::TestCase
   end
 
   def remove_tournament_context
-    @am.delete
-    @pm.delete
-    @cm.delete
+    Tournament.delete_all
   end
 
   def create_dojo_student_context
@@ -116,10 +94,7 @@ class ActiveSupport::TestCase
   end
 
   def remove_dojo_student_context
-    # @rec1.destroy
-    # @rec2.destroy
-    # @rec3.destroy
-    DojoStudent.destroy_all
+    DojoStudent.delete_all
   end
 
 end
