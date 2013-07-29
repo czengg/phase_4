@@ -74,7 +74,7 @@ class SectionTest < ActiveSupport::TestCase
 
     should "does not allow sections for tournaments not in the system" do
       @dm = FactoryGirl.build(:tournament, :name => "D&M Tournament", :date => Time.now.next_month.to_date, :min_rank => 5, :max_rank => 15)
-      @bad_section = FactoryGirl.build(:section, :event => @sparring, :tournament => @dm)
+      @bad_section = FactoryGirl.create(:section, :event => @sparring, :tournament => @dm)
       deny @bad_section.valid?
     end
     
@@ -148,5 +148,14 @@ class SectionTest < ActiveSupport::TestCase
       assert_equal ["Sparring", "Sparring"], Section.for_tournament(@am.id).map{|s| s.event.name}
     end
 
+    should "make sure a section with registrations isn't deleted" do
+      @ed = FactoryGirl.create(:student)
+      @reg_ed_sp = FactoryGirl.create(:registration, :student => @ed, :section => @wy_belt_sparring)      
+      assert_equal false, @wy_belt_sparring.check_if_destroyable
+    end
+
+    should "make sure a section with no registrations is deleted" do
+      assert_equal true, @wy_belt_sparring.check_if_destroyable
+    end
   end
 end

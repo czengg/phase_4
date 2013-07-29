@@ -66,11 +66,12 @@ class Section < ActiveRecord::Base
 
   def check_if_destroyable
     if self.registrations.by_date.empty?
-      self.destroy
-      self.save!
+      self.delete
+      return true
     else
       self.active = false
       self.save!
+      return false
     end
   end
 
@@ -96,6 +97,9 @@ class Section < ActiveRecord::Base
   end
 
   def tournament_is_active_in_system
+    if self.tournament_id == nil
+      return false
+    end
     active_tournament_ids = Tournament.active.all.map{|t| t.id}
     unless active_tournament_ids.include?(self.tournament_id)
       errors.add(:tournament, "is not an active tournament in the system")

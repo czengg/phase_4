@@ -153,5 +153,13 @@ class RegistrationTest < ActiveSupport::TestCase
       assert @reg_nm_br.valid?
     end
     
+    should "make sure a registration with student isn't deleted" do
+      assert_equal false, @reg_ed_sp.check_if_destroyable
+    end
+
+    should "make sure a registration with no student is deleted" do
+      @ed.delete
+      assert_equal true, @reg_ed_sp.check_if_destroyable
+    end
   end
 end

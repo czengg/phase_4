@@ -43,5 +43,15 @@ class EventTest < ActiveSupport::TestCase
       @swords = FactoryGirl.build(:event, :name => "Weapons")
       deny @swords.valid?
     end
+
+    should "make sure a event with sections isn't deleted" do
+      @am = FactoryGirl.create(:tournament)
+      @wy_belt_sparring = FactoryGirl.create(:section, :event => @sparring, :tournament => @am)
+      assert_equal false, @sparring.check_if_destroyable
+    end
+
+    should "make sure a event with no sections is deleted" do
+      assert_equal true, @sparring.check_if_destroyable
+    end
   end
 end

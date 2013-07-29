@@ -80,6 +80,15 @@ class TournamentTest < ActiveSupport::TestCase
   		assert_equal ["A&M Tournament", "P&M Tournament"], Tournament.next(1).map{|t| t.name}
   	end
 
+    should "make sure a tournament with sections isn't deleted" do
+      @sparring = FactoryGirl.create(:event)
+      @wy_belt_sparring = FactoryGirl.create(:section, :event => @sparring, :tournament => @am)
+      assert_equal false, @am.check_if_destroyable
+    end
+
+    should "make sure a tournament with no sections is deleted" do
+      assert_equal true, @am.check_if_destroyable
+    end
   end
 
 end

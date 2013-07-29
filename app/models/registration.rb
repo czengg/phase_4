@@ -29,16 +29,14 @@ class Registration < ActiveRecord::Base
   # validates_uniqueness_of :student_id, scope: :section_id
   
   #Callbacks
-  # before_destroy :check_if_destroyable
+  before_destroy :check_if_destroyable
 
   def check_if_destroyable
-    if self.student?
-      self.active = false
-      self.save!
+    all_students = Student.by_rank.all.map{|s| s.id}
+    if all_students.include?(self.student_id)
       return false
     else
-      self.destroy
-      self.save!
+      self.delete
       return true
     end
   end

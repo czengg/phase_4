@@ -78,6 +78,14 @@ class DojoTest < ActiveSupport::TestCase
       @rec1 = FactoryGirl.create(:dojo_student, :student => @ed, :dojo => @shadyside)
       assert_equal false, @shadyside.check_if_destroyable
     end
+
+    should "make sure a dojo with no students is deleted" do
+      assert_equal true, @shadyside.check_if_destroyable
+    end
+
+    should "throw error when address is not valid" do
+      deny FactoryGirl.create(:dojo, :name => "Invalid", :street => "Not a real street", :zip => "49392", :active => false, :state => "HI")
+    end
   end
 
 end

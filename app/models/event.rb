@@ -17,12 +17,12 @@ class Event < ActiveRecord::Base
     
   #Callbacks
   before_destroy :check_if_destroyable
-  after_rollback :end_event_now
 
   def check_if_destroyable
     if self.sections.active.empty?
       return true
     else
+      end_event_now
       return false
     end
   end
