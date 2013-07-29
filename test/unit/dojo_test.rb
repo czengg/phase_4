@@ -74,8 +74,8 @@ class DojoTest < ActiveSupport::TestCase
   	end
 
     should "make sure a dojo with students isn't deleted" do
-      @ed = FactoryGirl.build(:student)
-      @rec1 = FactoryGirl.build(:dojo_student, :student => @ed, :dojo => @shadyside)
+      @ed = FactoryGirl.create(:student)
+      @rec1 = FactoryGirl.create(:dojo_student, :student => @ed, :dojo => @shadyside)
       assert_equal false, @shadyside.check_if_destroyable
     end
   end

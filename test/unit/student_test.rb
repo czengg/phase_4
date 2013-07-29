@@ -102,7 +102,8 @@ class StudentTest < ActiveSupport::TestCase
     should "have class method for finding students in particular section" do
       # add to context for this one test
       @sparring = FactoryGirl.create(:event)
-      @wy_belt_sparring = FactoryGirl.create(:section, :event => @sparring)
+      @am = FactoryGirl.create(:tournament)
+      @wy_belt_sparring = FactoryGirl.create(:section, :event => @sparring, :tournament => @am)
       @reg_ed = FactoryGirl.create(:registration, :student => @ed, :section => @wy_belt_sparring)
       @reg_ted = FactoryGirl.create(:registration, :student => @ted, :section => @wy_belt_sparring)
       
@@ -111,10 +112,11 @@ class StudentTest < ActiveSupport::TestCase
       assert_equal ["Ed","Ted"], students.map{|s| s.first_name}.sort!
       
       # remove extra context
-      @sparring.destroy
-      @wy_belt_sparring.destroy
-      @reg_ed.destroy
-      @reg_ted.destroy
+      @sparring.delete
+      @am.delete
+      @wy_belt_sparring.delete
+      @reg_ed.delete
+      @reg_ted.delete
     end
     
     should "have class method for finding students between two ranks" do 
