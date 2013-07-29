@@ -87,7 +87,9 @@ class ActiveSupport::TestCase
 
   def create_dojo_context
     @shadyside = FactoryGirl.create(:dojo)
+    sleep 1
     @squirrelhill = FactoryGirl.create(:dojo, :name => "Squirrel Hill", :street => "1324 Murray Ave", :zip => "15444", :active => false, :state => "CA")
+    sleep 1
     @southside = FactoryGirl.create(:dojo, :name => "South Side", :street => "1234 Carson St", :zip => "15222", :active => true, :state => "CO")
   end
 
