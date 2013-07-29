@@ -120,7 +120,7 @@ class StudentTest < ActiveSupport::TestCase
     end
     
     should "have class method for finding students between two ranks" do 
-      assert_equal ["Gruberman","Major","Minor"], Student.ranks_between(8,10).alphabetical.all.map(&:last_name)
+      assert_equal ["Major","Minor", "Smith"], Student.ranks_between(8,10).alphabetical.all.map(&:last_name)
     end
     
     should "allow ranks_between class method to have a nil value for high_rank" do 
@@ -128,7 +128,7 @@ class StudentTest < ActiveSupport::TestCase
     end
     
     should "have class method for finding students between two ages" do 
-      assert_equal ["Gruberman","Gruberman","Gruberman","Gruberman","Hanson","Major","Minor"], Student.ages_between(5,14).alphabetical.all.map(&:last_name)
+      assert_equal ["Gruberman","Gruberman","Gruberman","Hanson","Major","Minor","Smith"], Student.ages_between(5,14).alphabetical.all.map(&:last_name)
       assert_equal ["Gruberman","Hanson","Henderson","Major","Minor"], Student.ages_between(11,19).alphabetical.all.map(&:last_name)
     end
     
@@ -138,11 +138,11 @@ class StudentTest < ActiveSupport::TestCase
     
     # start testing scopes...    
     should "have scope for alphabetical listing" do 
-      assert_equal ["Gruberman","Gruberman","Gruberman","Gruberman","Hanson","Henderson","Hoover","Major","Minor"], Student.alphabetical.all.map(&:last_name)
+      assert_equal ["Gruberman","Gruberman","Gruberman","Hanson","Henderson","Hoover","Major","Minor","Smith"], Student.alphabetical.all.map(&:last_name)
     end
     
     should "have scope for active students" do 
-      assert_equal ["Gruberman","Gruberman","Gruberman","Gruberman","Hanson","Henderson","Major","Minor"], Student.active.alphabetical.all.map(&:last_name)
+      assert_equal ["Gruberman","Gruberman","Gruberman","Hanson","Henderson","Major","Minor","Smith"], Student.active.alphabetical.all.map(&:last_name)
     end
     
     should "have scope for inactive students" do 
@@ -150,7 +150,7 @@ class StudentTest < ActiveSupport::TestCase
     end
     
     should "have scope for students with signed waiver" do 
-      assert_equal ["Gruberman","Gruberman","Gruberman","Gruberman","Hanson","Hoover","Major","Minor"], Student.has_waiver.alphabetical.all.map(&:last_name)
+      assert_equal ["Gruberman","Gruberman","Gruberman","Hanson","Hoover","Major","Minor","Smith"], Student.has_waiver.alphabetical.all.map(&:last_name)
     end
     
     should "have scope for students without signed waiver" do 
@@ -158,15 +158,15 @@ class StudentTest < ActiveSupport::TestCase
     end
     
     should "have scope for ordering by rank" do 
-      assert_equal ["Hoover","Hanson","Henderson","Gruberman","Major","Minor","Gruberman","Gruberman","Gruberman"], Student.by_rank.all.map(&:last_name)
+      assert_equal ["Hoover","Hanson","Henderson","Smith","Major","Minor","Gruberman","Gruberman","Gruberman"], Student.by_rank.all.map(&:last_name)
     end
     
     should "have scope for ordering by age" do 
-      assert_equal ["Hoover","Henderson","Minor","Hanson","Gruberman","Major","Gruberman","Gruberman","Gruberman"], Student.by_age.all.map(&:last_name)
+      assert_equal ["Hoover","Henderson","Minor","Hanson","Gruberman","Major","Gruberman","Gruberman","Smith"], Student.by_age.all.map(&:last_name)
     end
     
     should "have scope for listing all gups" do 
-      assert_equal ["Gruberman","Major","Minor","Gruberman","Gruberman","Gruberman"], Student.gups.by_rank.all.map(&:last_name)
+      assert_equal ["Smith","Major","Minor","Gruberman","Gruberman","Gruberman"], Student.gups.by_rank.all.map(&:last_name)
     end
     
     should "have scope for listing all dans" do 
@@ -174,7 +174,7 @@ class StudentTest < ActiveSupport::TestCase
     end
     
     should "have scope for listing all juniors" do 
-      assert_equal ["Hanson","Gruberman","Major","Minor","Gruberman","Gruberman","Gruberman"], Student.juniors.by_rank.all.map(&:last_name)
+      assert_equal ["Hanson","Smith","Major","Minor","Gruberman","Gruberman","Gruberman"], Student.juniors.by_rank.all.map(&:last_name)
     end
     
     should "have scope for listing all seniors" do 
