@@ -35,21 +35,21 @@ class DojoStudentTest < ActiveSupport::TestCase
   	#create objects
   	setup do
       create_dojo_context
-  		create_event_context
-      create_tournament_context
+  		# create_event_context
+      # create_tournament_context
       create_student_context
-      create_section_context
-      create_registration_context
+      # create_section_context
+      # create_registration_context
       create_dojo_student_context
     end
 
   	teardown do
       remove_dojo_context
-  		remove_event_context
-      remove_tournament_context
+  		# remove_event_context
+      # remove_tournament_context
       remove_student_context
-      remove_section_context
-      remove_registration_context
+      # remove_section_context
+      # remove_registration_context
       remove_dojo_student_context
   	end
 
