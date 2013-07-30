@@ -73,8 +73,8 @@ class SectionTest < ActiveSupport::TestCase
     end
 
     should "does not allow sections for tournaments not in the system" do
-      @dm = FactoryGirl.build(:tournament, :name => "D&M Tournament", :date => Time.now.next_month.to_date, :min_rank => 5, :max_rank => 15)
-      @bad_section = FactoryGirl.create(:section, :event => @sparring, :tournament => @dm)
+      @dm = FactoryGirl.create(:tournament, :name => "D&M Tournament", :date => Time.now.next_month.to_date, :min_rank => 5, :max_rank => 15, :active => false)
+      @bad_section = FactoryGirl.build(:section, :event => @sparring, :tournament => @dm, :max_age => 64)
       deny @bad_section.valid?
     end
     

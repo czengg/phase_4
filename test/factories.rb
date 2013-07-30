@@ -22,6 +22,7 @@ FactoryGirl.define do
     min_rank 1
     max_rank 2
     round_time 1.hour.ago.to_time
+    location "Gym"
     active true
   end
   
