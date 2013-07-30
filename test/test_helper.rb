@@ -6,9 +6,9 @@ require 'rails/test_help'
 
 class ActiveSupport::TestCase
   # Prof. H's deny method to improve readability of tests
-  def deny(condition)
+  def deny(condition, msg="")
     # a simple transformation to increase readability IMO
-    assert !condition
+    assert !condition, msg
   end
   
   # Context for events

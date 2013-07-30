@@ -27,10 +27,10 @@ class Section < ActiveRecord::Base
   validates_numericality_of :event_id, :only_integer => true, :greater_than => 0, :message => "is not a valid event"
   validates_numericality_of :tournament_id, :only_integer => true, :greater_than => 0, :message => "is not a valid tournament"
   validates_inclusion_of :active, :in => [true, false], :message => "must be true or false"
-
+  
   validate :event_is_active_in_system
   validate :section_is_not_already_in_system, :on => :create
-  validate :tournament_is_active_in_system
+  validate :verify_tournament_is_active_in_system
 
   # Not needed unless going the long route with registrations
   # def to_s
@@ -49,7 +49,7 @@ class Section < ActiveRecord::Base
         end
       end
     end
-    return
+    return 0
   end
 
   def tournament_max_rank
@@ -61,7 +61,7 @@ class Section < ActiveRecord::Base
         end
       end
     end
-    return
+    return 0
   end
 
   def check_if_destroyable
@@ -75,7 +75,7 @@ class Section < ActiveRecord::Base
     end
   end
 
-  private
+  # private
   def event_is_active_in_system
     # get an array of all active events in the system
     active_events_ids = Event.active.all.map{|e| e.id}
@@ -93,19 +93,29 @@ class Section < ActiveRecord::Base
     # possible_repeat = Section.find_by_event_id_and_min_age_and_min_rank(self.event_id, self.min_age, self.min_rank)
     unless possible_repeat.empty?  # use .nil? if using find_by as it only returns one object, not an array
       errors.add(:min_rank, "already has a section for this event, tournament, age and rank")
-    end
+      return false
+    end 
+    return true
   end
 
   def tournament_is_active_in_system
-    if self.tournament_id == nil
+    if self.tournament_id.nil?
       return false
+    else
+      active_tournament_ids = Tournament.active.all.map{|t| t.id}
+      active_tournament_ids.include?(self.tournament_id)
     end
-    active_tournament_ids = Tournament.active.all.map{|t| t.id}
-    unless active_tournament_ids.include?(self.tournament_id)
+  end
+  
+  def verify_tournament_is_active_in_system
+    if self.tournament_id.nil?
+      return false
+    elsif !tournament_is_active_in_system
       errors.add(:tournament, "is not an active tournament in the system")
       return false
+    else
+      return true
     end
-    return true
   end
 
 end
